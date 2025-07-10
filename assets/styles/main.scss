@@ -1,0 +1,289 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.main-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  
+  // CSS 변수 초기화
+  --background-scale: 1;
+  --trail-intensity: 1;
+  
+  // 배경 이미지 레이어
+  &::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: url('/background.png') center center/cover no-repeat;
+    z-index: 1;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(var(--background-scale));
+    transform-origin: center center;
+    transition: transform 0.8s ease-out;
+  }
+  
+  // 오버레이 레이어 (배경 이미지 위에 색상 오버레이)
+  &::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 30% 40%, rgba(255,0,255,0.05) 0%, transparent 50%),
+      radial-gradient(circle at 70% 20%, rgba(255,20,147,0.08) 0%, transparent 40%), 
+      radial-gradient(circle at 20% 80%, rgba(0,206,209,0.05) 0%, transparent 45%),
+      radial-gradient(circle at 80% 70%, rgba(255,99,71,0.05) 0%, transparent 35%),
+      linear-gradient(135deg, rgba(26,26,62,0.2) 0%, rgba(38,50,78,0.3) 50%, rgba(31,68,112,0.2) 100%);
+    z-index: 10;
+    mix-blend-mode: multiply;
+    opacity: 0.6;
+  }
+}
+
+.hero-section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  transform: scale(1);
+  transition: opacity 0.6s ease-out, filter 0.6s ease-out, transform 0.6s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  // CSS 변수 상속
+  --background-scale: var(--background-scale, 1);
+  --trail-intensity: var(--trail-intensity, 1);
+  
+  // 성능 최적화
+  will-change: opacity, filter, transform;
+  
+  // 별 애니메이션 레이어
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(3px 3px at 20px 30px, rgba(255,255,255,0.95), transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.9), transparent),
+      radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(4px 4px at 160px 120px, rgba(255,255,255,0.95), transparent),
+      radial-gradient(2px 2px at 200px 30px, rgba(255,255,255,0.85), transparent);
+    background-repeat: repeat;
+    background-size: 250px 150px;
+    animation: starsMove 80s linear infinite;
+    opacity: 0.8;
+    will-change: transform, opacity;
+  }
+
+  // 별 흔적 효과 레이어
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(ellipse calc(15px * var(--trail-intensity)) calc(3px * var(--trail-intensity)) at 20px 30px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(ellipse calc(12px * var(--trail-intensity)) calc(2px * var(--trail-intensity)) at 40px 70px, rgba(255,255,255,0.25), transparent),
+      radial-gradient(ellipse calc(10px * var(--trail-intensity)) calc(2px * var(--trail-intensity)) at 90px 40px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(ellipse calc(8px * var(--trail-intensity)) calc(2px * var(--trail-intensity)) at 130px 80px, rgba(255,255,255,0.15), transparent),
+      radial-gradient(ellipse calc(20px * var(--trail-intensity)) calc(4px * var(--trail-intensity)) at 160px 120px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(ellipse calc(14px * var(--trail-intensity)) calc(3px * var(--trail-intensity)) at 200px 30px, rgba(255,255,255,0.25), transparent);
+    background-repeat: repeat;
+    background-size: 250px 150px;
+    animation: starsTrail 80s linear infinite;
+    opacity: calc(0.6 * var(--trail-intensity));
+    will-change: transform, opacity;
+    transition: opacity 0.8s ease-out;
+  }
+  
+  .content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    will-change: transform, opacity;
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+    
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+    }
+    
+    p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+  }
+}
+
+.final-product {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1100;
+  opacity: 0;
+  scale: 0.8;
+  
+  .product-image {
+    width: 300px;
+    height: 300px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    span {
+      font-size: 2rem;
+      color: white;
+      font-weight: bold;
+    }
+  }
+}
+
+.products-page {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 3rem;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      
+      .product-card {
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: translateY(-5px);
+        }
+        
+        .product-image {
+          width: 100%;
+          height: 200px;
+          background: rgba(255,255,255,0.1);
+          border-radius: 10px;
+          margin-bottom: 1rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          span {
+            font-size: 1.5rem;
+            opacity: 0.7;
+          }
+        }
+        
+        h3 {
+          font-size: 1.5rem;
+          margin-bottom: 1rem;
+        }
+        
+        p {
+          opacity: 0.8;
+          line-height: 1.6;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spaceAnimation {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes starsMove {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-200px);
+  }
+}
+
+@keyframes starsTrail {
+  0% {
+    transform: translateX(0) scaleX(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateX(-100px) scaleX(1.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(-200px) scaleX(2);
+    opacity: 0.1;
+  }
+}
+
+// 미디어 쿼리 (추후 모바일 대응용)
+@media (max-width: 768px) {
+  .hero-section {
+    .content {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .final-product {
+    .product-image {
+      width: 250px;
+      height: 250px;
+    }
+  }
+} 
